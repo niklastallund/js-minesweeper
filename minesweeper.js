@@ -1,5 +1,1 @@
-// class Minesweeper() {
-//     constructor() {
-
-//     }
-// }
+console.log("Hello!");
