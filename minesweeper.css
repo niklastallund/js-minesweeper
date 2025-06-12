@@ -6,10 +6,25 @@ body {
     background-color: whitesmoke;
 }
 
-.game-container {
+#game-container {
     text-align: center;
     background: lightblue;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+#grid-container {
+    display: inline-grid;
+    background: rgb(190, 190, 190);
+    gap: 1px;
+    border: 5px ridge #ccc;
+    padding: 3px;
+}
+
+.cell {
+    background: lightgrey;
+    width: 25px;
+    height: 25px;
+    border: 2px outset #ccc;
 }
