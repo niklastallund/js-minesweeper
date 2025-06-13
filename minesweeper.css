@@ -18,6 +18,65 @@ h2 {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
+.difficulty-container {
+    position: relative;
+    display: inline-block;
+}
+
+#difficulty-button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 10px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#difficulty-button:hover {
+    background-color: #45a049;
+}
+
+.dropdown-content {
+    /* display: none;
+    position: absolute;
+    min-width: 140px;
+    z-index: 1;
+    overflow: hidden; */
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.dropdown-content.show {
+    display: block;
+    position: center;
+}
+
+.dropdown-content button {
+    background-color: transparent;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.dropdown-content button:hover {
+    background-color: #f1f1f1;
+}
+
 #difficulty-container {
     margin: auto;
 }

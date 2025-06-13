@@ -4,7 +4,7 @@ class Minesweeper {
             beginner: { rows: 9, cols: 9, mines: 10 },
             intermediate: { rows: 16, cols: 16, mines: 40 },
             expert: { rows: 16, cols: 32, mines: 99 },
-            nerd: { rows: 18, cols: 50, mines: 199 },
+            impossible: { rows: 18, cols: 50, mines: 199 },
         };
         this.currentDifficulty = "beginner";
         this.board = [];
@@ -33,8 +33,10 @@ class Minesweeper {
 
     //Generates the reset and difficulty buttons
     generateOptions() {
-        const dropdown = document.getElementById("difficulty-dropdown");
-        dropdown.innerHTML = "";
+        const difficultyButton = document.getElementById("difficulty-button");
+        difficultyButton.addEventListener("click", () =>
+            this.handleDropdownMenu()
+        );
 
         Object.keys(this.difficulties).forEach((key) => {
             const button = document.createElement("button");
@@ -43,7 +45,7 @@ class Minesweeper {
             button.textContent = `${key} (${difficulty.rows}x${difficulty.cols}, ${difficulty.mines} mines)`;
             button.addEventListener("click", () => this.handleDifficulty(key));
 
-            dropdown.appendChild(button);
+            document.getElementById("dropdown-menu").appendChild(button);
         });
 
         //Generate the rest button functionality
@@ -52,9 +54,14 @@ class Minesweeper {
             .addEventListener("click", () => this.newGame());
     }
 
+    handleDropdownMenu() {
+        document.querySelector(".dropdown-content").classList.toggle("show");
+    }
+
     //Handles changing difficulty when a difficulty button is clicked
     handleDifficulty(key) {
         this.currentDifficulty = key;
+        this.handleDropdownMenu();
         this.newGame();
     }
 
@@ -125,4 +132,14 @@ class Minesweeper {
 document.addEventListener("DOMContentLoaded", function () {
     // Your initialization code here
     const game = new Minesweeper();
+});
+
+//Hides the difficulty menu if user clicks outside the window
+document.addEventListener("click", function (event) {
+    if (!event.target.matches("#difficulty-button")) {
+        var dropdown = document.querySelector(".dropdown-content");
+        if (dropdown.classList.contains("show")) {
+            dropdown.classList.remove("show");
+        }
+    }
 });
