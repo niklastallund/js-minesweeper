@@ -6,6 +6,10 @@ body {
     background-color: whitesmoke;
 }
 
+h2 {
+    margin: 5px;
+}
+
 #game-container {
     text-align: center;
     background: lightblue;
@@ -14,17 +18,34 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
+#difficulty-container {
+    margin: auto;
+}
+
+#game-state-container {
+    display: flex;
+    justify-content: space-between;
+    background: lightgrey;
+    margin: 10px auto;
+}
+
+.counter {
+    background: black;
+    color: red;
+    padding: 5px;
+}
+
 #grid-container {
     display: inline-grid;
-    background: rgb(190, 190, 190);
+    background: rgb(170, 170, 170);
     gap: 1px;
-    border: 5px ridge #ccc;
+    border: 5px ridge rgb(190, 190, 190);
     padding: 3px;
 }
 
 .cell {
-    background: lightgrey;
+    background: rgb(200, 200, 200);
     width: 25px;
     height: 25px;
-    border: 2px outset #ccc;
+    border: 2px outset rgb(190, 190, 190);
 }

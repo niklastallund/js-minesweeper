@@ -1,18 +1,20 @@
 class Minesweeper {
     constructor() {
         this.difficulties = {
-            one: { rows: 9, cols: 9, mines: 10 },
-            two: { rows: 16, cols: 16, mines: 40 },
-            three: { rows: 16, cols: 32, mines: 99 },
-            extreme: { rows: 20, cols: 40, mines: 199 },
+            beginner: { rows: 9, cols: 9, mines: 10 },
+            intermediate: { rows: 16, cols: 16, mines: 40 },
+            expert: { rows: 16, cols: 32, mines: 99 },
+            nerd: { rows: 18, cols: 50, mines: 199 },
         };
-        this.currentDifficulty = "one";
+        this.currentDifficulty = "beginner";
         this.board = [];
         this.gameState = "start";
         this.firstClick = true;
         this.flagCount = 0;
         this.revealCount = 0;
+        this.mineCount = 0;
 
+        this.generateOptions();
         this.newGame();
     }
 
@@ -22,15 +24,42 @@ class Minesweeper {
         this.firstClick = true;
         this.flagCount = 0;
         this.revealCount = 0;
+        this.mineCount = this.difficulties[this.currentDifficulty].mines;
         this.board = [];
 
         //Generate a new board
         this.generateBoard();
     }
 
+    //Generates the reset and difficulty buttons
+    generateOptions() {
+        const dropdown = document.getElementById("difficulty-dropdown");
+        dropdown.innerHTML = "";
+
+        Object.keys(this.difficulties).forEach((key) => {
+            const button = document.createElement("button");
+            const difficulty = this.difficulties[key];
+
+            button.textContent = `${key} (${difficulty.rows}x${difficulty.cols}, ${difficulty.mines} mines)`;
+            button.addEventListener("click", () => this.handleDifficulty(key));
+
+            dropdown.appendChild(button);
+        });
+
+        //Generate the rest button functionality
+        document
+            .getElementById("reset-button")
+            .addEventListener("click", () => this.newGame());
+    }
+
+    //Handles changing difficulty when a difficulty button is clicked
+    handleDifficulty(key) {
+        this.currentDifficulty = key;
+        this.newGame();
+    }
+
     //Generates the logic for the game board
     generateBoard() {
-        this.currentDifficulty = "extreme";
         const diff = this.difficulties[this.currentDifficulty];
 
         for (let row = 0; row < diff.rows; row++) {
@@ -63,16 +92,19 @@ class Minesweeper {
                 cell.dataset.row = row;
                 cell.dataset.col = col;
 
-                cell.addEventListener("click", (element) =>
-                    this.clickedLeft(element, row, col)
+                cell.addEventListener("click", (event) =>
+                    this.clickedLeft(event, row, col)
                 );
-                cell.addEventListener("contextmenu", (element) => {
-                    this.clickedRight(element, row, col);
+                cell.addEventListener("contextmenu", (event) => {
+                    this.clickedRight(event, row, col);
                 });
 
                 grid.appendChild(cell);
             }
         }
+
+        //Set the mine counter for the board
+        document.getElementById("mine-counter").innerHTML = this.mineCount;
     }
 
     //TODO
@@ -93,5 +125,4 @@ class Minesweeper {
 document.addEventListener("DOMContentLoaded", function () {
     // Your initialization code here
     const game = new Minesweeper();
-    console.log("hello");
 });
