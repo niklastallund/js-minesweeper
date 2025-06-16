@@ -9,25 +9,29 @@ class Minesweeper {
         this.currentDifficulty = "beginner";
         this.board = [];
         this.gameState = "start";
-        this.firstClick = true;
         this.flagCount = 0;
         this.revealCount = 0;
         this.mineCount = 0;
+        this.timer = 0;
+        this.timerInterval = null;
 
         this.generateOptions();
         this.newGame();
     }
 
     newGame() {
-        //Reset everything
+        //Reset everything and generate a new board
         this.gameState = "start";
-        this.firstClick = true;
         this.flagCount = 0;
         this.revealCount = 0;
         this.mineCount = this.difficulties[this.currentDifficulty].mines;
+        this.timer = 0;
         this.board = [];
 
-        //Generate a new board
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+        }
+
         this.generateBoard();
     }
 
@@ -54,6 +58,7 @@ class Minesweeper {
             .addEventListener("click", () => this.newGame());
     }
 
+    //Toggles the difficulty menu
     handleDropdownMenu() {
         document.querySelector(".dropdown-content").classList.toggle("show");
     }
@@ -61,6 +66,7 @@ class Minesweeper {
     //Handles changing difficulty when a difficulty button is clicked
     handleDifficulty(key) {
         this.currentDifficulty = key;
+        document.getElementById("timer").textContent = "000";
         this.handleDropdownMenu();
         this.newGame();
     }
@@ -75,7 +81,7 @@ class Minesweeper {
                 this.board[row][col] = {
                     isMine: false,
                     isFlag: false,
-                    isCleared: false,
+                    isClear: false,
                     neighborMines: 0,
                 };
             }
@@ -94,33 +100,90 @@ class Minesweeper {
 
         for (let row = 0; row < diff.rows; row++) {
             for (let col = 0; col < diff.cols; col++) {
-                const cell = document.createElement("div");
-                cell.className = "cell";
-                cell.dataset.row = row;
-                cell.dataset.col = col;
+                const tile = document.createElement("div");
+                tile.className = "tile";
+                tile.dataset.row = row;
+                tile.dataset.col = col;
 
-                cell.addEventListener("click", (event) =>
-                    this.clickedLeft(event, row, col)
-                );
-                cell.addEventListener("contextmenu", (event) => {
-                    this.clickedRight(event, row, col);
+                tile.addEventListener("click", (event) => {
+                    event.preventDefault();
+                    this.clickedLeft(row, col);
+                });
+                tile.addEventListener("contextmenu", (event) => {
+                    event.preventDefault();
+                    this.clickedRight(row, col);
                 });
 
-                grid.appendChild(cell);
+                grid.appendChild(tile);
             }
         }
 
         //Set the mine counter for the board
-        document.getElementById("mine-counter").innerHTML = this.mineCount;
+        document.getElementById("mine-counter").innerHTML = this.mineCount
+            .toString()
+            .padStart(3, "0");
     }
 
     //TODO
-    clickedLeft() {
+    calculateNeighborMines(row, col) {
         return;
     }
 
     //TODO
-    clickedRight() {
+    placeMines(row, col) {
+        return;
+    }
+
+    //TODO
+    revealTile() {
+        //TODO check for victory
+        return;
+    }
+
+    //TODO
+    //won is a bool which decides if we won or lost
+    gameOver(won) {
+        return;
+    }
+
+    startTimer() {
+        this.timerInterval = setInterval(() => {
+            this.timer++;
+            this.updateTimer();
+        }, 1000);
+    }
+
+    updateTimer() {
+        document.getElementById("timer").textContent = Math.min(this.timer, 999)
+            .toString()
+            .padStart(3, "0");
+    }
+
+    //TODO
+    clickedLeft(row, col) {
+        const currentTile = this.board[row][col]; //Current tile
+
+        //We do nothing if one of these are true
+        if (this.gameState === "won" || this.gameState === "lost") return;
+        if (currentTile.isFlag || currentTile.isClear) return;
+
+        //gameState "start" means no tile has been clicked
+        //Give placeMines the coordinates to the first square to avoid losing on first move
+        if (this.gameState === "start") {
+            this.gameState = "playing";
+            this.placeMines(row, col);
+            this.startTimer();
+        }
+
+        if (currentTile.isMine) {
+            this.gameOver(false);
+        } else {
+            revealTile();
+        }
+    }
+
+    //TODO
+    clickedRight(row, col) {
         return;
     }
 }

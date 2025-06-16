@@ -30,7 +30,6 @@ h2 {
     font-size: 14px;
     border: none;
     cursor: pointer;
-    border-radius: 4px;
 }
 
 #difficulty-button:hover {
@@ -38,18 +37,11 @@ h2 {
 }
 
 .dropdown-content {
-    /* display: none;
-    position: absolute;
-    min-width: 140px;
-    z-index: 1;
-    overflow: hidden; */
     display: none;
     position: absolute;
     background-color: #f9f9f9;
     min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
-    border-radius: 4px;
     overflow: hidden;
 }
 
@@ -102,9 +94,13 @@ h2 {
     padding: 3px;
 }
 
-.cell {
+.tile {
     background: rgb(200, 200, 200);
     width: 25px;
     height: 25px;
     border: 2px outset rgb(190, 190, 190);
+}
+
+.tile:active {
+    border: 2px inset rgb(190, 190, 190);
 }
