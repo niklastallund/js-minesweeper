@@ -78,11 +78,13 @@ class Minesweeper {
         for (let row = 0; row < diff.rows; row++) {
             this.board[row] = [];
             for (let col = 0; col < diff.cols; col++) {
+                //element contains the DOM element of the cell
                 this.board[row][col] = {
                     isMine: false,
                     isFlag: false,
                     isClear: false,
                     neighborMines: 0,
+                    element: null,
                 };
             }
         }
@@ -98,12 +100,11 @@ class Minesweeper {
         grid.style.gridTemplateRows = `repeat(${diff.rows}, 1fr)`;
         grid.style.gridTemplateColumns = `repeat(${diff.cols}, 1fr)`;
 
+        //Create the DOM element for each tile and store it in board[row][col].element
         for (let row = 0; row < diff.rows; row++) {
             for (let col = 0; col < diff.cols; col++) {
                 const tile = document.createElement("div");
                 tile.className = "tile";
-                tile.dataset.row = row;
-                tile.dataset.col = col;
 
                 tile.addEventListener("click", (event) => {
                     event.preventDefault();
@@ -114,6 +115,7 @@ class Minesweeper {
                     this.clickedRight(row, col);
                 });
 
+                this.board[row][col].element = tile;
                 grid.appendChild(tile);
             }
         }
@@ -129,15 +131,44 @@ class Minesweeper {
         return;
     }
 
-    //TODO
-    placeMines(row, col) {
-        return;
+    placeMines(clickedRow, clickedCol) {
+        const difficulty = this.difficulties[this.currentDifficulty];
+        let placedMines = 0;
+
+        //Generate random coordinates and place mines there
+        while (placedMines < difficulty.mines) {
+            let row = Math.floor(Math.random() * difficulty.rows);
+            let col = Math.floor(Math.random() * difficulty.cols);
+            let tile = this.board[row][col];
+
+            //Dont place a mine on the first click tile or if it's already a mine.
+            if ((row === clickedRow && col === clickedCol) || tile.isMine) {
+                continue;
+            } else {
+                tile.isMine = true;
+                placedMines++;
+            }
+        }
     }
 
     //TODO
-    revealTile() {
-        //TODO check for victory
+    revealTile(currentTile) {
         return;
+    }
+
+    //TODO Use this to show all mines on game over
+    updateAllTiles() {
+        return;
+    }
+
+    //Check if we won after clicking a tile
+    checkWin() {
+        const difficulty = this.difficulties[this.currentDifficulty];
+        const totalCells = config.rows * config.cols;
+
+        if (this.revealCount === totalCells - difficulty.mines) {
+            this.gameOver(true);
+        }
     }
 
     //TODO
@@ -161,7 +192,7 @@ class Minesweeper {
 
     //TODO
     clickedLeft(row, col) {
-        const currentTile = this.board[row][col]; //Current tile
+        const currentTile = this.board[row][col];
 
         //We do nothing if one of these are true
         if (this.gameState === "won" || this.gameState === "lost") return;
@@ -178,7 +209,8 @@ class Minesweeper {
         if (currentTile.isMine) {
             this.gameOver(false);
         } else {
-            revealTile();
+            this.revealTile(currentTile);
+            this.checkWin();
         }
     }
 

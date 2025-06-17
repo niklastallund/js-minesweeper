@@ -104,3 +104,8 @@ h2 {
 .tile:active {
     border: 2px inset rgb(190, 190, 190);
 }
+
+.cell.revealed {
+    border: 1px inset #999;
+    background: #e0e0e0;
+}
