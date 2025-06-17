@@ -75,9 +75,9 @@ class Minesweeper {
     generateBoard() {
         const diff = this.difficulties[this.currentDifficulty];
 
-        for (let row = 0; row < diff.rows; row++) {
+        for (let row = 0; row < diff.rows; ++row) {
             this.board[row] = [];
-            for (let col = 0; col < diff.cols; col++) {
+            for (let col = 0; col < diff.cols; ++col) {
                 //element contains the DOM element of the cell
                 this.board[row][col] = {
                     isMine: false,
@@ -101,8 +101,8 @@ class Minesweeper {
         grid.style.gridTemplateColumns = `repeat(${diff.cols}, 1fr)`;
 
         //Create the DOM element for each tile and store it in board[row][col].element
-        for (let row = 0; row < diff.rows; row++) {
-            for (let col = 0; col < diff.cols; col++) {
+        for (let row = 0; row < diff.rows; ++row) {
+            for (let col = 0; col < diff.cols; ++col) {
                 const tile = document.createElement("div");
                 tile.className = "tile";
 
@@ -126,9 +126,42 @@ class Minesweeper {
             .padStart(3, "0");
     }
 
-    //TODO
-    calculateNeighborMines(row, col) {
-        return;
+    //TODO Should probably refactor this with some helper functions
+    //Calculates which mines have neighbors and how many they have
+    //Allows us to display the neighbor count on each tile and reveal open tiles
+    calculateNeighborMines() {
+        const difficulty = this.difficulties[this.currentDifficulty];
+        //1. We loop through every coordinate in the board
+        //2. Check every neighbor for mines and update neighborMines
+        for (let row = 0; row < difficulty.rows; ++row) {
+            for (let col = 0; col < difficulty.cols; ++col) {
+                //No need to check for neighbors if it is a mine
+                if (!this.board[row][col].isMine) {
+                    let mineCount = 0;
+
+                    //Look through all coordinates around the given tile
+                    for (let i = -1; i <= 1; ++i) {
+                        for (let j = -1; j <= 1; ++j) {
+                            let nRow = row + i;
+                            let nCol = col + j;
+
+                            //Check if coordinates are inside the board and if it's a mine
+                            if (
+                                nRow >= 0 &&
+                                nRow < difficulty.rows &&
+                                nCol >= 0 &&
+                                nCol < difficulty.cols &&
+                                this.board[nRow][nCol].isMine
+                            ) {
+                                ++count;
+                            }
+                        }
+                    }
+
+                    this.board[row][col].neighborMines = count;
+                }
+            }
+        }
     }
 
     placeMines(clickedRow, clickedCol) {
@@ -144,14 +177,16 @@ class Minesweeper {
             //Dont place a mine on the first click tile or if it's already a mine.
             if ((row === clickedRow && col === clickedCol) || tile.isMine) {
                 continue;
-            } else {
-                tile.isMine = true;
-                placedMines++;
             }
+
+            tile.isMine = true;
+            placedMines++;
         }
+
+        this.calculateNeighborMines();
     }
 
-    //TODO
+    //TODO Update the current tile
     revealTile(currentTile) {
         return;
     }
@@ -190,7 +225,6 @@ class Minesweeper {
             .padStart(3, "0");
     }
 
-    //TODO
     clickedLeft(row, col) {
         const currentTile = this.board[row][col];
 
