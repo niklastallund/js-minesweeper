@@ -6,7 +6,7 @@ class Minesweeper {
             expert: { rows: 16, cols: 32, mines: 99 },
             impossible: { rows: 18, cols: 50, mines: 199 },
         };
-        this.currentDifficulty = "beginner";
+        this.currentDifficulty = this.difficulties.beginner;
         this.board = [];
         this.gameState = "start";
         this.flagCount = 0;
@@ -24,7 +24,7 @@ class Minesweeper {
         this.gameState = "start";
         this.flagCount = 0;
         this.revealCount = 0;
-        this.mineCount = this.difficulties[this.currentDifficulty].mines;
+        this.mineCount = this.currentDifficulty.mines;
         this.timer = 0;
         this.board = [];
 
@@ -65,7 +65,7 @@ class Minesweeper {
 
     //Handles changing difficulty when a difficulty button is clicked
     handleDifficulty(key) {
-        this.currentDifficulty = key;
+        this.currentDifficulty = this.difficulties[key];
         document.getElementById("timer").textContent = "000";
         this.handleDropdownMenu();
         this.newGame();
@@ -73,7 +73,7 @@ class Minesweeper {
 
     //Generates the logic for the game board
     generateBoard() {
-        const diff = this.difficulties[this.currentDifficulty];
+        const diff = this.currentDifficulty;
 
         for (let row = 0; row < diff.rows; ++row) {
             this.board[row] = [];
@@ -94,7 +94,7 @@ class Minesweeper {
 
     //Generates the visual game grid
     generateGrid() {
-        const diff = this.difficulties[this.currentDifficulty];
+        const diff = this.currentDifficulty;
         const grid = document.getElementById("grid-container");
         grid.innerHTML = "";
         grid.style.gridTemplateRows = `repeat(${diff.rows}, 1fr)`;
@@ -130,7 +130,7 @@ class Minesweeper {
     //Calculates which mines have neighbors and how many they have
     //Allows us to display the neighbor count on each tile and reveal open tiles
     calculateNeighborMines() {
-        const diff = this.difficulties[this.currentDifficulty];
+        const diff = this.currentDifficulty;
         //1. We loop through every coordinate in the board
         //2. Check every neighbor for mines and update neighborMines
         for (let row = 0; row < diff.rows; ++row) {
@@ -165,13 +165,12 @@ class Minesweeper {
     }
 
     placeMines(clickedRow, clickedCol) {
-        const diff = this.difficulties[this.currentDifficulty];
         let placedMines = 0;
 
         //Generate random coordinates and place mines there
-        while (placedMines < diff.mines) {
-            let row = Math.floor(Math.random() * diff.rows);
-            let col = Math.floor(Math.random() * diff.cols);
+        while (placedMines < this.currentDifficulty.mines) {
+            let row = Math.floor(Math.random() * this.currentDifficulty.rows);
+            let col = Math.floor(Math.random() * this.currentDifficulty.cols);
             let tile = this.board[row][col];
 
             //Dont place a mine on the first click tile or if it's already a mine.
@@ -198,7 +197,7 @@ class Minesweeper {
 
     //Check if we won after clicking a tile
     checkWin() {
-        const diff = this.difficulties[this.currentDifficulty];
+        const diff = this.currentDifficulty;
         const totalCells = diff.rows * diff.cols;
 
         if (this.revealCount === totalCells - diff.mines) {
