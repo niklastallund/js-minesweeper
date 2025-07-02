@@ -150,10 +150,11 @@ class Minesweeper {
                                 nRow >= 0 &&
                                 nRow < diff.rows &&
                                 nCol >= 0 &&
-                                nCol < diff.cols &&
-                                this.board[nRow][nCol].isMine
+                                nCol < diff.cols
                             ) {
-                                ++mineCount;
+                                if (this.board[nRow][nCol].isMine) {
+                                    ++mineCount;
+                                }
                             }
                         }
                     }
@@ -183,6 +184,7 @@ class Minesweeper {
         }
 
         this.calculateNeighborMines();
+        this.drawCompleteBoard();
     }
 
     //TODO Update the current tile
@@ -251,6 +253,21 @@ class Minesweeper {
     clickedRight(row, col) {
         return;
     }
+
+    //tmp function for some testing
+    drawCompleteBoard() {
+        const diff = this.currentDifficulty;
+        for (let row = 0; row < diff.rows; ++row) {
+            for (let col = 0; col < diff.cols; ++col) {
+                let tile = this.board[row][col];
+                if (tile.isMine) {
+                    tile.element.innerHTML = "*";
+                } else if (tile.neighborMines != 0) {
+                    tile.element.innerHTML = tile.neighborMines;
+                }
+            }
+        }
+    }
 }
 
 /* ---- */
@@ -258,7 +275,6 @@ class Minesweeper {
 /* ---- */
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Your initialization code here
     const game = new Minesweeper();
 });
 
