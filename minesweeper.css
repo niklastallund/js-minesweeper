@@ -99,13 +99,25 @@ h2 {
     width: 25px;
     height: 25px;
     border: 2px outset rgb(190, 190, 190);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    user-select: none;
 }
 
 .tile:active {
-    border: 2px inset rgb(190, 190, 190);
+    border: 1px inset rgb(190, 190, 190);
 }
 
-.cell.revealed {
-    border: 1px inset #999;
-    background: #e0e0e0;
+.tile.revealed {
+    border: 1px inset rgb(190, 190, 190);
+    background: #dddddd;
+}
+
+.tile.revealed-mine {
+    border: 1px inset rgb(190, 190, 190);
+    background: red;
 }

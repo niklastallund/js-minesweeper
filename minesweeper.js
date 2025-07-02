@@ -257,13 +257,27 @@ class Minesweeper {
     //tmp function for some testing
     drawCompleteBoard() {
         const diff = this.currentDifficulty;
+        const colors = [
+            "blue",
+            "green",
+            "red",
+            "purple",
+            "maroon",
+            "turquoise",
+            "black",
+            "gray",
+        ];
+
         for (let row = 0; row < diff.rows; ++row) {
             for (let col = 0; col < diff.cols; ++col) {
                 let tile = this.board[row][col];
                 if (tile.isMine) {
                     tile.element.innerHTML = "*";
+                    tile.element.classList.add("revealed-mine");
                 } else if (tile.neighborMines != 0) {
                     tile.element.innerHTML = tile.neighborMines;
+                    tile.element.style.color = colors[tile.neighborMines - 1];
+                    tile.element.classList.add("revealed");
                 }
             }
         }
