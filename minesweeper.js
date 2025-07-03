@@ -108,11 +108,11 @@ class Minesweeper {
 
                 tile.addEventListener("click", (event) => {
                     event.preventDefault();
-                    this.clickedLeft(row, col);
+                    this.handleLeftClick(row, col);
                 });
                 tile.addEventListener("contextmenu", (event) => {
                     event.preventDefault();
-                    this.clickedRight(row, col);
+                    this.handleRightClick(row, col);
                 });
 
                 this.board[row][col].element = tile;
@@ -120,8 +120,13 @@ class Minesweeper {
             }
         }
 
-        //Set the mine counter for the board
-        document.getElementById("mine-counter").innerHTML = this.mineCount
+        this.updateMineCounter();
+    }
+
+    updateMineCounter() {
+        const currentCount = this.currentDifficulty.mines - this.flagCount;
+        console.log(currentCount);
+        document.getElementById("mine-counter").innerHTML = currentCount
             .toString()
             .padStart(3, "0");
     }
@@ -226,7 +231,7 @@ class Minesweeper {
             .padStart(3, "0");
     }
 
-    clickedLeft(row, col) {
+    handleLeftClick(row, col) {
         const currentTile = this.board[row][col];
 
         //We do nothing if one of these are true
@@ -249,9 +254,22 @@ class Minesweeper {
         }
     }
 
-    //TODO
-    clickedRight(row, col) {
-        return;
+    handleRightClick(row, col) {
+        const currentTile = this.board[row][col];
+        if (this.gameState === "won" || this.gameState === "lost") return;
+        if (currentTile.isRevealed) return;
+
+        //Toggle the flag bool and update the mine count
+        currentTile.isFlag = !currentTile.isFlag;
+        this.flagCount += currentTile.isFlag ? 1 : -1;
+        this.updateMineCounter();
+
+        //Update the tile visuals
+        if (currentTile.element.innerHTML === "🚩") {
+            currentTile.element.innerHTML = "";
+        } else {
+            currentTile.element.innerHTML = "🚩";
+        }
     }
 
     //tmp function for some testing
