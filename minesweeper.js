@@ -53,10 +53,13 @@ class Minesweeper {
             document.getElementById("dropdown-menu").appendChild(button);
         });
 
-        //Generate the rest button functionality
-        document
-            .getElementById("reset-button")
-            .addEventListener("click", () => this.newGame());
+        //Generate the reset button functionality
+        const resetButton = document.getElementById("reset-button");
+
+        resetButton.addEventListener("click", () => this.newGame());
+        resetButton.addEventListener("mousedown", () => {
+            document.getElementById("reset-button").textContent = "😮";
+        });
     }
 
     //Toggles the difficulty menu
@@ -274,7 +277,7 @@ class Minesweeper {
     //won is a bool which decides if we won or lost
     gameOver(won) {
         const button = document.getElementById("reset-button");
-        
+
         if (this.timerInterval) {
             clearInterval(this.timerInterval);
         }

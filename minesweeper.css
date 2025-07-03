@@ -7,12 +7,14 @@ body {
 }
 
 h2 {
-    margin: 5px;
+    font-family: "MS Sans Serif", sans-serif;
+    margin: 0px;
 }
 
 #game-container {
     text-align: center;
-    background: lightblue;
+    background: #c0c0c0;
+    border: 2px outset #c0c0c0;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
@@ -24,66 +26,107 @@ h2 {
 }
 
 #difficulty-button {
-    background-color: #4caf50;
-    color: white;
-    padding: 10px 10px;
+    background-color: rgb(170, 170, 170);
+    color: black;
+    border: 2px outset #ccc;
+    padding: 8px 12px;
     font-size: 14px;
-    border: none;
+    font-family: "MS Sans Serif", sans-serif;
     cursor: pointer;
+    border-radius: 0;
+    font-weight: bold;
 }
 
 #difficulty-button:hover {
-    background-color: #45a049;
+    background-color: rgb(180, 180, 180);
+}
+
+#difficulty-button:active {
+    border: 2px inset rgb(190, 190, 190);
+    background-color: rgb(160, 160, 160);
 }
 
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
+    background-color: rgb(170, 170, 170);
+    border: 4px ridge rgb(190, 190, 190);
+    min-width: 200px;
     z-index: 1;
     overflow: hidden;
+    border-radius: 0;
 }
 
 .dropdown-content.show {
     display: block;
-    position: center;
 }
 
 .dropdown-content button {
-    background-color: transparent;
+    background-color: rgb(170, 170, 170);
     color: black;
-    padding: 12px 16px;
+    padding: 10px 16px;
     text-decoration: none;
     display: block;
-    border: none;
+    border: 1px solid transparent;
     width: 100%;
     text-align: left;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
+    font-family: "MS Sans Serif", sans-serif;
     white-space: nowrap;
     overflow: hidden;
+    border-radius: 0;
+    box-sizing: border-box;
 }
 
 .dropdown-content button:hover {
-    background-color: #f1f1f1;
+    background-color: rgb(180, 180, 180);
+    border: 1px inset rgb(190, 190, 190);
 }
 
-#difficulty-container {
-    margin: auto;
+.dropdown-content button:active {
+    background-color: rgb(160, 160, 160);
+    border: 1px inset rgb(190, 190, 190);
 }
 
 #game-state-container {
     display: flex;
     justify-content: space-between;
-    background: lightgrey;
+    align-items: center;
+    background: rgb(170, 170, 170);
+    border: 5px ridge rgb(190, 190, 190);
     margin: 10px auto;
+    padding: 8px 12px;
+    border-radius: 0;
+}
+.counter {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ff0000;
+    background: #000;
+    padding: 4px 8px;
+    border-radius: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 40px;
+    text-align: center;
+    border: 2px inset #808080;
+    font-family: "Courier New", monospace;
 }
 
-.counter {
-    background: black;
-    color: red;
-    padding: 5px;
+#reset-button {
+    font-size: 24px;
+    background: none;
+    border: 2px outset #ccc;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    border-radius: 0;
+}
+
+#reset-button:active {
+    border: 2px inset #ccc;
 }
 
 #grid-container {
@@ -95,7 +138,7 @@ h2 {
 }
 
 .tile {
-    background: rgb(200, 200, 200);
+    background: rgb(170, 170, 170);
     width: 25px;
     height: 25px;
     border: 2px outset rgb(190, 190, 190);
