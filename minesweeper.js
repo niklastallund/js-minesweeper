@@ -125,7 +125,6 @@ class Minesweeper {
 
     updateMineCounter() {
         const currentCount = this.currentDifficulty.mines - this.flagCount;
-        console.log(currentCount);
         document.getElementById("mine-counter").innerHTML = currentCount
             .toString()
             .padStart(3, "0");
@@ -189,12 +188,29 @@ class Minesweeper {
         }
 
         this.calculateNeighborMines();
-        this.drawCompleteBoard();
     }
 
-    //TODO Update the current tile
-    revealTile(currentTile) {
-        return;
+    revealTile(tile) {
+        const colors = [
+            "blue",
+            "green",
+            "red",
+            "purple",
+            "maroon",
+            "turquoise",
+            "black",
+            "gray",
+        ];
+
+        if (tile.isMine) {
+            this.drawCompleteBoard();
+            tile.element.innerHTML = "💣";
+            tile.element.classList.add("revealed-mine");
+        } else if (tile.neighborMines != 0) {
+            tile.element.innerHTML = tile.neighborMines;
+            tile.element.style.color = colors[tile.neighborMines - 1];
+            tile.element.classList.add("revealed");
+        }
     }
 
     //TODO Use this to show all mines on game over
@@ -247,6 +263,7 @@ class Minesweeper {
         }
 
         if (currentTile.isMine) {
+            this.revealTile(currentTile);
             this.gameOver(false);
         } else {
             this.revealTile(currentTile);
@@ -290,7 +307,7 @@ class Minesweeper {
             for (let col = 0; col < diff.cols; ++col) {
                 let tile = this.board[row][col];
                 if (tile.isMine) {
-                    tile.element.innerHTML = "*";
+                    tile.element.innerHTML = "💣";
                     tile.element.classList.add("revealed-mine");
                 } else if (tile.neighborMines != 0) {
                     tile.element.innerHTML = tile.neighborMines;
