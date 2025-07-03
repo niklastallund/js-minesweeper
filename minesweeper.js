@@ -27,6 +27,7 @@ class Minesweeper {
         this.mineCount = this.currentDifficulty.mines;
         this.timer = 0;
         this.board = [];
+        document.getElementById("reset-button").innerHTML = "🙂";
 
         if (this.timerInterval) {
             clearInterval(this.timerInterval);
@@ -82,7 +83,7 @@ class Minesweeper {
                 this.board[row][col] = {
                     isMine: false,
                     isFlag: false,
-                    isClear: false,
+                    isRevealed: false,
                     neighborMines: 0,
                     element: null,
                 };
@@ -190,7 +191,13 @@ class Minesweeper {
         this.calculateNeighborMines();
     }
 
+    //Reveals ths given tile both graphically and in the game logic
     revealTile(tile) {
+        if (tile.isRevealed) return;
+
+        tile.isRevealed = true;
+        this.revealCount++;
+
         const colors = [
             "blue",
             "green",
@@ -203,19 +210,54 @@ class Minesweeper {
         ];
 
         if (tile.isMine) {
-            this.drawCompleteBoard();
             tile.element.innerHTML = "💣";
             tile.element.classList.add("revealed-mine");
         } else if (tile.neighborMines != 0) {
             tile.element.innerHTML = tile.neighborMines;
             tile.element.style.color = colors[tile.neighborMines - 1];
             tile.element.classList.add("revealed");
+        } else {
+            tile.element.innerHTML = "";
+            tile.element.classList.add("revealed");
         }
     }
 
-    //TODO Use this to show all mines on game over
-    updateAllTiles() {
-        return;
+    //Uses recursion to reveal neighboring tiles if the given tile has no neighboring mines
+    revealTileAndNeighbors(row, col) {
+        const diff = this.currentDifficulty;
+
+        //Bounds checking
+        if (row < 0 || row >= diff.rows || col < 0 || col >= diff.cols) return;
+
+        const tile = this.board[row][col];
+
+        // Don't reveal if already revealed, flagged, or is a mine
+        if (tile.isRevealed || tile.isFlag || tile.isMine) return;
+
+        this.revealTile(tile);
+
+        // If this tile has no neighboring mines, recursively reveal neighbors
+        if (tile.neighborMines === 0) {
+            for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                    this.revealTileAndNeighbors(row + i, col + j);
+                }
+            }
+        }
+    }
+
+    //Reveals all mines in case we click a mine and lose
+    revealAllMines() {
+        const diff = this.currentDifficulty;
+
+        for (let row = 0; row < diff.rows; ++row) {
+            for (let col = 0; col < diff.cols; ++col) {
+                let tile = this.board[row][col];
+                if (tile.isMine && !tile.isFlag) {
+                    this.revealTile(tile);
+                }
+            }
+        }
     }
 
     //Check if we won after clicking a tile
@@ -231,7 +273,17 @@ class Minesweeper {
     //TODO
     //won is a bool which decides if we won or lost
     gameOver(won) {
-        return;
+        const button = document.getElementById("reset-button");
+        
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+        }
+
+        if (won) {
+            button.innerHTML = "😎";
+        } else {
+            button.innerHTML = "😵";
+        }
     }
 
     startTimer() {
@@ -252,7 +304,7 @@ class Minesweeper {
 
         //We do nothing if one of these are true
         if (this.gameState === "won" || this.gameState === "lost") return;
-        if (currentTile.isFlag || currentTile.isClear) return;
+        if (currentTile.isFlag || currentTile.isRevealed) return;
 
         //gameState "start" means no tile has been clicked
         //Give placeMines the coordinates to the first square to avoid losing on first move
@@ -263,10 +315,10 @@ class Minesweeper {
         }
 
         if (currentTile.isMine) {
-            this.revealTile(currentTile);
+            this.revealAllMines();
             this.gameOver(false);
         } else {
-            this.revealTile(currentTile);
+            this.revealTileAndNeighbors(row, col);
             this.checkWin();
         }
     }
@@ -286,35 +338,6 @@ class Minesweeper {
             currentTile.element.innerHTML = "";
         } else {
             currentTile.element.innerHTML = "🚩";
-        }
-    }
-
-    //tmp function for some testing
-    drawCompleteBoard() {
-        const diff = this.currentDifficulty;
-        const colors = [
-            "blue",
-            "green",
-            "red",
-            "purple",
-            "maroon",
-            "turquoise",
-            "black",
-            "gray",
-        ];
-
-        for (let row = 0; row < diff.rows; ++row) {
-            for (let col = 0; col < diff.cols; ++col) {
-                let tile = this.board[row][col];
-                if (tile.isMine) {
-                    tile.element.innerHTML = "💣";
-                    tile.element.classList.add("revealed-mine");
-                } else if (tile.neighborMines != 0) {
-                    tile.element.innerHTML = tile.neighborMines;
-                    tile.element.style.color = colors[tile.neighborMines - 1];
-                    tile.element.classList.add("revealed");
-                }
-            }
         }
     }
 }
