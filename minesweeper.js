@@ -273,7 +273,6 @@ class Minesweeper {
         }
     }
 
-    //TODO
     //won is a bool which decides if we won or lost
     gameOver(won) {
         const button = document.getElementById("reset-button");
@@ -281,6 +280,8 @@ class Minesweeper {
         if (this.timerInterval) {
             clearInterval(this.timerInterval);
         }
+
+        this.gameState = won ? "won" : "lost";
 
         if (won) {
             button.innerHTML = "😎";
