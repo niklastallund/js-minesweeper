@@ -134,43 +134,48 @@ class Minesweeper {
             .padStart(3, "0");
     }
 
-    //TODO Should probably refactor this with some helper functions
+    //Returns true if the given coordiantes is within the board
+    isValidPosition(row, col) {
+        const diff = this.currentDifficulty;
+        return row >= 0 && row < diff.rows && col >= 0 && col < diff.cols;
+    }
+
     //Calculates which mines have neighbors and how many they have
     //Allows us to display the neighbor count on each tile and reveal open tiles
     calculateNeighborMines() {
         const diff = this.currentDifficulty;
-        //1. We loop through every coordinate in the board
-        //2. Check every neighbor for mines and update neighborMines
-        for (let row = 0; row < diff.rows; ++row) {
-            for (let col = 0; col < diff.cols; ++col) {
-                //No need to check for neighbors if it is a mine
+
+        for (let row = 0; row < diff.rows; row++) {
+            for (let col = 0; col < diff.cols; col++) {
                 if (!this.board[row][col].isMine) {
-                    let mineCount = 0;
-
-                    //Look through all coordinates around the given tile
-                    for (let i = -1; i <= 1; ++i) {
-                        for (let j = -1; j <= 1; ++j) {
-                            let nRow = row + i;
-                            let nCol = col + j;
-
-                            //Check if coordinates are inside the board and if it's a mine
-                            if (
-                                nRow >= 0 &&
-                                nRow < diff.rows &&
-                                nCol >= 0 &&
-                                nCol < diff.cols
-                            ) {
-                                if (this.board[nRow][nCol].isMine) {
-                                    ++mineCount;
-                                }
-                            }
-                        }
-                    }
-
-                    this.board[row][col].neighborMines = mineCount;
+                    this.board[row][col].neighborMines =
+                        this.countNeighborMines(row, col);
                 }
             }
         }
+    }
+
+    //Helper function for calculateNeighborMines()
+    //Goes through every neighbor that is a valid position and checks for a mine
+    //Returns the number of mines that are neighbors
+    countNeighborMines(row, col) {
+        let count = 0;
+
+        for (let i = -1; i <= 1; i++) {
+            for (let j = -1; j <= 1; j++) {
+                const neighborRow = row + i;
+                const neighborCol = col + j;
+
+                if (
+                    this.isValidPosition(neighborRow, neighborCol) &&
+                    this.board[neighborRow][neighborCol].isMine
+                ) {
+                    count++;
+                }
+            }
+        }
+
+        return count;
     }
 
     placeMines(clickedRow, clickedCol) {
@@ -227,14 +232,10 @@ class Minesweeper {
 
     //Uses recursion to reveal neighboring tiles if the given tile has no neighboring mines
     revealTileAndNeighbors(row, col) {
-        const diff = this.currentDifficulty;
-
-        //Bounds checking
-        if (row < 0 || row >= diff.rows || col < 0 || col >= diff.cols) return;
+        if (!this.isValidPosition(row, col)) return;
 
         const tile = this.board[row][col];
 
-        // Don't reveal if already revealed, flagged, or is a mine
         if (tile.isRevealed || tile.isFlag || tile.isMine) return;
 
         this.revealTile(tile);
@@ -290,6 +291,7 @@ class Minesweeper {
         }
     }
 
+    //Starts the timer when the player clicks first tile.
     startTimer() {
         this.timerInterval = setInterval(() => {
             this.timer++;
